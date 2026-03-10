@@ -29,7 +29,7 @@
             <label>Senha:</label>
             <div class="input-box">
                 <input type="password" id="senha" placeholder="Sua senha do portal">
-                <i class="fas fa-eye eye-icon" onclick="toggleSenha()"></i>
+                <i class="fas fa-eye-slash eye-icon" id="eyeIcon" onclick="toggleSenha()"></i>
             </div>
         </div>
 
@@ -46,18 +46,25 @@
                 <h3>Atividades Pendentes</h3>
                 <span class="close-btn" onclick="fecharModal()">&times;</span>
             </div>
-
-            <div id="listaContainer">
-                </div>
-
+            <div id="listaContainer"></div>
             <button class="btn-salvar" onclick="simularExecucao()" style="margin-top: 20px;">
                 <i class="fas fa-robot"></i> Resolver Pendentes
             </button>
         </div>
     </div>
 
+    <div class="modal-overlay" id="modalContas">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Contas Salvas</h3>
+                <span class="close-btn" onclick="fecharModalContas()">&times;</span>
+            </div>
+            <div id="listaContasContainer"></div>
+        </div>
+    </div>
+
     <script>
-        // --- SISTEMA DE NOTIFICAÇÕES LATERAIS ---
+        // --- NOTIFICAÇÕES LATERAIS ---
         function showNotification(title, message) {
             const container = document.getElementById('notification-container');
             const notif = document.createElement('div');
@@ -70,7 +77,6 @@
                 </div>
             `;
             container.appendChild(notif);
-
             setTimeout(() => notif.classList.add('show'), 10);
             setTimeout(() => {
                 notif.classList.remove('show');
@@ -78,12 +84,89 @@
             }, 4500);
         }
 
+        // --- ANIMAÇÃO DO OLHO ---
         function toggleSenha() {
             const input = document.getElementById('senha');
-            input.type = input.type === "password" ? "text" : "password";
+            const icon = document.getElementById('eyeIcon');
+            
+            if (input.type === "password") {
+                input.type = "text";
+                // Troca pro olho aberto e acende a luz (active)
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye', 'active'); 
+            } else {
+                input.type = "password";
+                // Troca pro olho fechado e apaga a luz
+                icon.classList.remove('fa-eye', 'active');
+                icon.classList.add('fa-eye-slash');
+            }
         }
 
-        // --- SIMULAÇÃO DA BUSCA (FRONTEND) ---
+        // --- SISTEMA DE CONTAS SALVAS ---
+        function getContas() {
+            const contas = localStorage.getItem('cruzeiro_accounts');
+            return contas ? JSON.parse(contas) : [];
+        }
+
+        function salvarContaLocal(email, senha) {
+            let contas = getContas();
+            // Evita duplicar o mesmo email
+            if (!contas.some(c => c.email === email)) {
+                contas.push({ email: email, pass: senha });
+                localStorage.setItem('cruzeiro_accounts', JSON.stringify(contas));
+            }
+        }
+
+        function abrirModalContas() {
+            document.getElementById('modalContas').style.display = 'flex';
+            renderizarContas();
+        }
+
+        function fecharModalContas() {
+            document.getElementById('modalContas').style.display = 'none';
+        }
+
+        function renderizarContas() {
+            const container = document.getElementById('listaContasContainer');
+            const contas = getContas();
+
+            if (contas.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888; padding: 20px;">Nenhuma conta salva no momento.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            contas.forEach(conta => {
+                const div = document.createElement('div');
+                div.className = 'conta-item';
+                div.innerHTML = `
+                    <span class="conta-email">${conta.email}</span>
+                    <div class="conta-actions">
+                        <button class="btn-usar" onclick="preencherConta('${conta.email}', '${conta.pass}')">Usar</button>
+                        <button class="btn-excluir" onclick="excluirConta('${conta.email}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function preencherConta(email, pass) {
+            document.getElementById('email').value = email;
+            document.getElementById('senha').value = pass;
+            fecharModalContas();
+            showNotification("Pronto", "Credenciais carregadas.");
+        }
+
+        function excluirConta(email) {
+            if(confirm(`Excluir a conta ${email}?`)) {
+                let contas = getContas();
+                contas = contas.filter(c => c.email !== email); 
+                localStorage.setItem('cruzeiro_accounts', JSON.stringify(contas));
+                renderizarContas(); 
+            }
+        }
+
+        // --- SIMULAÇÃO DA BUSCA ---
         function simularBusca() {
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
@@ -92,17 +175,16 @@
                 return showNotification("Aviso", "Preencha seu Email e Senha.");
             }
 
-            // Início da simulação visual
-            showNotification("Autenticação", "Conectando ao portal Cruzeiro do Sul...");
+            // SALVA A CONTA AQUI
+            salvarContaLocal(email, senha);
+
+            showNotification("Autenticação", "Conectando ao portal...");
             
-            // Finge que a API demorou 1.5s para logar
             setTimeout(() => {
-                showNotification("Processamento", "Buscando atividades...");
+                showNotification("Processamento", "Buscando atividades na Blackboard...");
                 
-                // Finge que demorou mais 1.5s para achar as lições
                 setTimeout(() => {
                     const container = document.getElementById('listaContainer');
-                    // Cria uma lista falsa só para ver o visual
                     container.innerHTML = `
                         <div class="task-item">
                             <input type="checkbox" name="tarefaCheck" id="t_1">
@@ -124,7 +206,7 @@
         }
 
         function simularExecucao() {
-            showNotification("Lendo o conteúdo da matéria e redigindo resposta...");
+            showNotification("IA Trabalhando", "Lendo o conteúdo da matéria e redigindo resposta...");
             setTimeout(() => {
                 showNotification("Sucesso!", "Atividade enviada para o portal.");
                 fecharModal();

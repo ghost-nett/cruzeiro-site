@@ -321,3 +321,79 @@ button {
     font-size: 0.85rem;
     color: #ccc;
 }
+
+/* =========================================
+   ANIMAÇÃO DO OLHO (SENHA) E CONTAS SALVAS
+   ========================================= */
+
+/* Transição suave e brilho para o olho quando ativo */
+.eye-icon {
+    transition: all 0.3s ease;
+}
+
+.eye-icon.active {
+    color: #0088ff; /* Azul neon */
+    text-shadow: 0 0 10px rgba(0, 136, 255, 0.6); /* Efeito de luz acesa */
+}
+
+/* Modal de Contas Salvas */
+.conta-item {
+    background: #0f1621;
+    border: 1px solid #1a273b;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.3s;
+}
+
+.conta-item:hover {
+    border-color: #0088ff;
+}
+
+.conta-email {
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    word-break: break-all;
+    padding-right: 10px;
+}
+
+.conta-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-usar, .btn-excluir {
+    width: auto;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #fff;
+}
+
+.btn-usar {
+    background: #0088ff;
+}
+
+.btn-usar:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+
+.btn-excluir {
+    background: #1a273b;
+    color: #ff4444; /* Vermelho para perigo */
+    border: 1px solid #2a3b55;
+}
+
+.btn-excluir:hover {
+    background: #ff4444;
+    color: #fff;
+    transform: translateY(-2px);
+}
