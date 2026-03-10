@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CruzeiroNet - Automação</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="logo">CruzeiroNet</h1>
+        <p class="subtitle">Automação Acadêmica</p>
+        <p class="tag">CRUZEIRO DO SUL</p>
+
+        <button class="btn-contas" onclick="abrirModalContas()">
+            <i class="fas fa-users"></i> Contas Salvas
+        </button>
+
+        <div class="input-group">
+            <label>Email Educacional:</label>
+            <div class="input-box">
+                <input type="email" id="email" placeholder="nome@cruzeirodosul.edu.br">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Senha:</label>
+            <div class="input-box">
+                <input type="password" id="senha" placeholder="Sua senha do portal">
+                <i class="fas fa-eye eye-icon" onclick="toggleSenha()"></i>
+            </div>
+        </div>
+
+        <button class="btn-pendente" onclick="simularBusca()" style="margin-top: 20px;">
+            <i class="fas fa-search"></i> Buscar Atividades
+        </button>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <div class="modal-overlay" id="modalTarefas">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Atividades Pendentes</h3>
+                <span class="close-btn" onclick="fecharModal()">&times;</span>
+            </div>
+
+            <div id="listaContainer">
+                </div>
+
+            <button class="btn-salvar" onclick="simularExecucao()" style="margin-top: 20px;">
+                <i class="fas fa-robot"></i> Resolver Pendentes
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- SISTEMA DE NOTIFICAÇÕES LATERAIS ---
+        function showNotification(title, message) {
+            const container = document.getElementById('notification-container');
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.innerHTML = `
+                <i class="fas fa-info"></i>
+                <div class="notification-content">
+                    <strong>${title}</strong>
+                    <span>${message}</span>
+                </div>
+            `;
+            container.appendChild(notif);
+
+            setTimeout(() => notif.classList.add('show'), 10);
+            setTimeout(() => {
+                notif.classList.remove('show');
+                setTimeout(() => notif.remove(), 300);
+            }, 4500);
+        }
+
+        function toggleSenha() {
+            const input = document.getElementById('senha');
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
+        // --- SIMULAÇÃO DA BUSCA (FRONTEND) ---
+        function simularBusca() {
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            if(!email || !senha) {
+                return showNotification("Aviso", "Preencha seu Email e Senha.");
+            }
+
+            // Início da simulação visual
+            showNotification("Autenticação", "Conectando ao portal Cruzeiro do Sul...");
+            
+            // Finge que a API demorou 1.5s para logar
+            setTimeout(() => {
+                showNotification("Processamento", "Buscando atividades...");
+                
+                // Finge que demorou mais 1.5s para achar as lições
+                setTimeout(() => {
+                    const container = document.getElementById('listaContainer');
+                    // Cria uma lista falsa só para ver o visual
+                    container.innerHTML = `
+                        <div class="task-item">
+                            <input type="checkbox" name="tarefaCheck" id="t_1">
+                            <label for="t_1" style="margin-left:10px; color:#fff">Questionário: Lógica de Programação <span style="color:#666; font-size:0.8em">(Pendente)</span></label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" name="tarefaCheck" id="t_2">
+                            <label for="t_2" style="margin-left:10px; color:#fff">Fórum: Estrutura de Dados <span style="color:#666; font-size:0.8em">(Pendente)</span></label>
+                        </div>
+                    `;
+                    document.getElementById('modalTarefas').style.display = 'flex';
+                }, 1500);
+
+            }, 1500);
+        }
+
+        function fecharModal() { 
+            document.getElementById('modalTarefas').style.display = 'none'; 
+        }
+
+        function simularExecucao() {
+            showNotification("Lendo o conteúdo da matéria e redigindo resposta...");
+            setTimeout(() => {
+                showNotification("Sucesso!", "Atividade enviada para o portal.");
+                fecharModal();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

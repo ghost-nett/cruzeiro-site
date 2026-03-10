@@ -1,0 +1,323 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #030610; /* Fundo principal escuro */
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Evita que a onda crie barra de rolagem no site */
+    position: relative;
+    background-image: radial-gradient(circle at top, #091221 0%, #030610 80%);
+}
+
+/* =========================================
+   EFEITO DE ONDAS ANIMADAS NO FUNDO
+   ========================================= */
+body::before, body::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-repeat: repeat-x;
+    z-index: 0; /* Fica no fundo */
+}
+
+/* Onda 1 (Mais escura e rápida) */
+body::before {
+    height: 55vh;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%2308162d' fill-opacity='0.8' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+    background-size: 1440px 100%;
+    animation: wave 18s linear infinite;
+}
+
+/* Onda 2 (Mais clara, atrás, indo pro outro lado) */
+body::after {
+    height: 65vh;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230d2546' fill-opacity='0.4' d='M0,128L48,144C96,160,192,192,288,186.7C384,181,480,139,576,149.3C672,160,768,224,864,240C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+    background-size: 1440px 100%;
+    animation: wave 25s linear infinite reverse;
+}
+
+/* O motor que faz a onda andar */
+@keyframes wave {
+    0% { background-position-x: 0; }
+    100% { background-position-x: 1440px; }
+}
+
+/* Ajuste no container para ele ficar SEMPRE na frente das ondas */
+.container {
+    background: #0b111a;
+    border: 1px solid #1a273b;
+    border-radius: 12px;
+    padding: 40px 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 10; /* Mantém a caixa de login intocável na frente */
+    backdrop-filter: blur(10px); /* Dá um efeitinho de vidro se a onda passar por trás */
+}
+
+.logo {
+    color: #0088ff; /* Azul Neon */
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(0, 136, 255, 0.4);
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.tag {
+    font-size: 0.7rem;
+    color: #0088ff;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+/* Campos de Input */
+.input-group {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.input-box {
+    position: relative;
+    width: 100%;
+}
+
+.input-box input {
+    width: 100%;
+    background: #0f1621;
+    border: 1px solid #1f2e45;
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.input-box input:focus {
+    border-color: #0088ff;
+    box-shadow: 0 0 8px rgba(0, 136, 255, 0.2);
+}
+
+.eye-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.eye-icon:hover {
+    color: #0088ff;
+}
+
+/* Botões */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-contas {
+    background: #0f1621;
+    color: #fff;
+    border: 1px solid #1f2e45;
+    margin-bottom: 25px;
+}
+
+.btn-contas:hover {
+    background: #151e2e;
+    border-color: #0088ff;
+}
+
+.btn-pendente, .btn-salvar {
+    background: linear-gradient(90deg, #0088ff 0%, #0056b3 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 136, 255, 0.3);
+}
+
+.btn-pendente:hover, .btn-salvar:hover {
+    box-shadow: 0 6px 20px rgba(0, 136, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Modais */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background: #0b111a;
+    border: 1px solid #1a273b;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    padding: 25px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #1a273b;
+    padding-bottom: 15px;
+}
+
+.modal-header h3 {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.close-btn {
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: #0088ff;
+}
+
+/* Lista */
+#listaContainer {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 5px;
+}
+
+#listaContainer::-webkit-scrollbar { width: 6px; }
+#listaContainer::-webkit-scrollbar-track { background: #0f1621; border-radius: 4px; }
+#listaContainer::-webkit-scrollbar-thumb { background: #1f2e45; border-radius: 4px; }
+#listaContainer::-webkit-scrollbar-thumb:hover { background: #0088ff; }
+
+.task-item {
+    background: #0f1621;
+    border: 1px solid #1a273b;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.3s;
+}
+
+.task-item:hover {
+    border-color: #3b5998;
+}
+
+.task-item input[type="checkbox"] {
+    accent-color: #0088ff;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Notificações Laterais (Tema Azul) */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification {
+    background: #08101a; 
+    border: 1px solid #12223a; 
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    min-width: 320px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    transform: translateX(120%);
+    transition: transform 0.3s ease-out;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification i {
+    font-size: 1rem;
+    margin-top: 3px;
+    color: #000;
+    background: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.notification-content strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 3px;
+    color: #fff;
+}
+
+.notification-content span {
+    font-size: 0.85rem;
+    color: #ccc;
+}
