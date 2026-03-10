@@ -38,6 +38,11 @@
         </button>
     </div>
 
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingText">Conectando...</p>
+    </div>
+
     <div id="notification-container"></div>
 
     <div class="modal-overlay" id="modalTarefas">
@@ -64,13 +69,27 @@
     </div>
 
     <script>
+        // --- FUNÇÕES DA TELA DE CARREGAMENTO ---
+        function abrirLoading(texto) {
+            document.getElementById('loadingText').innerText = texto;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function atualizarLoading(texto) {
+            document.getElementById('loadingText').innerText = texto;
+        }
+
+        function fecharLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
         // --- NOTIFICAÇÕES LATERAIS ---
         function showNotification(title, message) {
             const container = document.getElementById('notification-container');
             const notif = document.createElement('div');
             notif.className = 'notification';
             notif.innerHTML = `
-                <i class="fas fa-info"></i>
+                <i class="fas fa-bolt"></i>
                 <div class="notification-content">
                     <strong>${title}</strong>
                     <span>${message}</span>
@@ -91,12 +110,10 @@
             
             if (input.type === "password") {
                 input.type = "text";
-                // Troca pro olho aberto e acende a luz (active)
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye', 'active'); 
             } else {
                 input.type = "password";
-                // Troca pro olho fechado e apaga a luz
                 icon.classList.remove('fa-eye', 'active');
                 icon.classList.add('fa-eye-slash');
             }
@@ -110,7 +127,6 @@
 
         function salvarContaLocal(email, senha) {
             let contas = getContas();
-            // Evita duplicar o mesmo email
             if (!contas.some(c => c.email === email)) {
                 contas.push({ email: email, pass: senha });
                 localStorage.setItem('cruzeiro_accounts', JSON.stringify(contas));
@@ -166,7 +182,15 @@
             }
         }
 
-        // --- SIMULAÇÃO DA BUSCA ---
+        // --- SELECIONAR TODAS ---
+        function toggleSelecionarTodas(source) {
+            const checkboxes = document.getElementsByName('tarefaCheck');
+            for(let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+
+        // --- SIMULAÇÃO DA BUSCA (COM NOVO BOTÃO DE SELECIONAR) ---
         function simularBusca() {
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
@@ -175,17 +199,24 @@
                 return showNotification("Aviso", "Preencha seu Email e Senha.");
             }
 
-            // SALVA A CONTA AQUI
             salvarContaLocal(email, senha);
 
-            showNotification("Autenticação", "Conectando ao portal...");
+            abrirLoading("Autenticando...");
+            showNotification("Conexão Estabelecida", "Acessando servidores da Cruzeiro do Sul...");
             
             setTimeout(() => {
-                showNotification("Processamento", "Buscando atividades na Blackboard...");
+                atualizarLoading("Buscando matérias...");
+                showNotification("Acesso Liberado", "Lendo grade curricular...");
                 
                 setTimeout(() => {
+                    fecharLoading();
                     const container = document.getElementById('listaContainer');
+                    // Inseri a opção de Selecionar Todas aqui
                     container.innerHTML = `
+                        <div style="margin-bottom: 15px; border-bottom: 1px solid #1a273b; padding-bottom: 15px; display: flex; align-items: center;">
+                            <input type="checkbox" id="checkAll" onchange="toggleSelecionarTodas(this)" style="accent-color: #0088ff; width: 18px; height: 18px; cursor: pointer;">
+                            <label for="checkAll" style="color: #0088ff; font-weight: 600; font-size: 0.95rem; margin-left: 10px; cursor: pointer;">Selecionar Todas</label>
+                        </div>
                         <div class="task-item">
                             <input type="checkbox" name="tarefaCheck" id="t_1">
                             <label for="t_1" style="margin-left:10px; color:#fff">Questionário: Lógica de Programação <span style="color:#666; font-size:0.8em">(Pendente)</span></label>
@@ -196,21 +227,37 @@
                         </div>
                     `;
                     document.getElementById('modalTarefas').style.display = 'flex';
-                }, 1500);
+                }, 1800);
 
-            }, 1500);
+            }, 1800);
         }
 
         function fecharModal() { 
             document.getElementById('modalTarefas').style.display = 'none'; 
         }
 
+        // --- SIMULAÇÃO DO ENVIO (IA) ---
         function simularExecucao() {
-            showNotification("IA Trabalhando", "Lendo o conteúdo da matéria e redigindo resposta...");
+            // Verifica se tem alguma selecionada antes de rodar
+            const checkboxes = document.getElementsByName('tarefaCheck');
+            let temSelecionada = false;
+            for(let i = 0; i < checkboxes.length; i++) {
+                if(checkboxes[i].checked) temSelecionada = true;
+            }
+
+            if(!temSelecionada) {
+                return showNotification("Atenção", "Selecione pelo menos uma atividade na lista!");
+            }
+
+            abrirLoading("Realizando pendentes...");
+            showNotification("Análise Iniciada", "Lendo arquivos da matéria...");
+            
             setTimeout(() => {
-                showNotification("Sucesso!", "Atividade enviada para o portal.");
+                fecharLoading();
+                // Texto limpo sem variáveis, fim do bug do 'undefined'
+                showNotification("Questões respondidas com sucesso.");
                 fecharModal();
-            }, 3000);
+            }, 3500);
         }
     </script>
 </body>
